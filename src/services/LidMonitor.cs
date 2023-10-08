@@ -25,25 +25,12 @@ class LidMonitor
         if (e.Mode == PowerModes.Suspend)
         {
             Console.WriteLine("Laptop is going to sleep (lid closed).");
-            using (StreamWriter writer = new StreamWriter("./monitor.txt"))
-            {
-                writer.WriteLine("Laptop is going to sleep ");
-            }
-            // Implement your code for sleep event here
         }
         else if (e.Mode == PowerModes.Resume)
         {
             Console.WriteLine("Laptop is waking up (lid opened).");
-            using (StreamWriter writer = new StreamWriter("./monitor.txt"))
-            {
-                writer.WriteLine("Laptop is waking up");
-            }
-            // Implement your code for wake event here
         }
-        using (StreamWriter writer = new StreamWriter("./monitor.txt"))
-        {
-            writer.WriteLine("nothing");
-        }
+        
     }
 
 }
