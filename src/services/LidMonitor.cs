@@ -14,20 +14,9 @@ class LidMonitor
     {
         EventLog[] eventLogs = EventLog.GetEventLogs();
 
-        using (StreamWriter writer = new StreamWriter("./monitor.txt"))
-        {
-            writer.WriteLine("starttt");
-        }
         //SystemEvents.PowerModeChanged += OnPowerModeChanged;
         SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnPowerModeChanged);
         Console.WriteLine("Monitoring laptop lid events. Press Enter to exit...");
-        Console.ReadLine();
-    }
-
-    public static void MainCall2(MailOptions mailOptions)
-    {
-        SystemEvents.TimeChanged += OnTimeChanged;
-        Console.WriteLine("Monitoring laptop OnTimeChanged events. Press Enter to exit...");
         Console.ReadLine();
     }
 
@@ -57,23 +46,4 @@ class LidMonitor
         }
     }
 
-
-
-    private static void OnTimeChanged(object sender, EventArgs e)
-    {
-        Console.WriteLine("System time has changed.");
-        using (StreamWriter writer = new StreamWriter("./monitor.txt"))
-        {
-            writer.WriteLine("System time has changed.");
-        }
-        // Implement your code to respond to time changes here
-    }
-
-    //private static void WriteToFile(string message)
-    //{
-    //    using (StreamWriter sw = File.AppendText(path))
-    //    {
-    //        sw.WriteLine(string.Format("Message : {0}; DateTime : {1}", message, DateTime.Now.ToString()));
-    //    }
-    //}
 }
