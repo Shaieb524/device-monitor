@@ -12,10 +12,11 @@ class Program
         .AddUserSecrets<Program>();
 
         IConfiguration config = builder.Build();
-        
+
         MailOptions mailOptions = new MailOptions();
         config.GetSection("MailOptions").Bind(mailOptions);
 
-        MailServices.SendEmail(mailOptions);
+        //MailServices.SendEmail(mailOptions);
+        LidMonitor.MainCall(mailOptions);
     }
 }

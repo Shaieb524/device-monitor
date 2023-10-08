@@ -1,0 +1,4 @@
+/- check windows events viewer
+/- check the sleep event in windwos
+/- get systen evebts fir cs prog
+- try to get the sleep evet to the prog
