@@ -1,36 +1,34 @@
-using System;
-using System.Diagnostics;
-using System.IO;
 using CustomModels;
-using CustomSerives;
 using Microsoft.Win32;
 
 class LidMonitor
 {
     private static MailOptions _mailOptions;
-    //private FileStream fileStream = new FileStream(@"c:\test.txt", FileMode.OpenOrCreate);
 
     public static void MainCall(MailOptions mailOptions)
     {
-        EventLog[] eventLogs = EventLog.GetEventLogs();
-
-        //SystemEvents.PowerModeChanged += OnPowerModeChanged;
-        SystemEvents.PowerModeChanged += new PowerModeChangedEventHandler(OnPowerModeChanged);
-        Console.WriteLine("Monitoring laptop lid events. Press Enter to exit...");
-        Console.ReadLine();
+        try
+        {
+            SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+            Console.WriteLine("monitoring lock");
+            Console.ReadLine();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
     }
 
-    private static void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
+    static void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
     {
-        if (e.Mode == PowerModes.Suspend)
+        if (e.Reason == SessionSwitchReason.SessionLock)
         {
-            Console.WriteLine("Laptop is going to sleep (lid closed).");
+            Console.WriteLine("I left my desk");
         }
-        else if (e.Mode == PowerModes.Resume)
+        else if (e.Reason == SessionSwitchReason.SessionUnlock)
         {
-            Console.WriteLine("Laptop is waking up (lid opened).");
-        }
-        
-    }
+            Console.WriteLine("I returned to my desk");
 
+        }
+    }
 }
