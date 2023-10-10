@@ -4,7 +4,7 @@ using Microsoft.Win32;
 class LidMonitor
 {
     private static MailOptions _mailOptions;
-    private const string LOG_FILE_PATH = "logs/user_activity.txt";
+    private const string LOG_FILE_PATH = "user_activity.txt";
 
     public static void MainCall(MailOptions mailOptions)
     {
@@ -22,17 +22,21 @@ class LidMonitor
 
     static void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
     {
+        DateTime currentDateAndTime = DateTime.Now;
+        string dateOnly = currentDateAndTime.ToString("MM/dd/yyyy");
+        string todayLogPath = $"logs/{dateOnly.Replace("/", "-").Replace(" ", "-")}/{LOG_FILE_PATH}";
+
         if (e.Reason == SessionSwitchReason.SessionLock)
         {
             Console.WriteLine("I left my desk");
-            EnsureDirectoryExists(GetFullFilePath(LOG_FILE_PATH));
-            AppendMessageToFile(GetFullFilePath(LOG_FILE_PATH), "Desktop closed!");
+            EnsureDirectoryExists(GetFullFilePath(todayLogPath));
+            AppendMessageToFile(GetFullFilePath(todayLogPath), "Desktop closed!");
         }
         else if (e.Reason == SessionSwitchReason.SessionUnlock)
         {
             Console.WriteLine("I returned to my desk");
-            EnsureDirectoryExists(GetFullFilePath(LOG_FILE_PATH));
-            AppendMessageToFile(GetFullFilePath(LOG_FILE_PATH), "Desktop opened!");
+            EnsureDirectoryExists(GetFullFilePath(todayLogPath));
+            AppendMessageToFile(GetFullFilePath(todayLogPath), "Desktop opened!");
         }
     }
 
@@ -54,10 +58,8 @@ class LidMonitor
     static string GetFullFilePath(string relativeFilePath)
     {
         string projectRootPath = Directory.GetCurrentDirectory();
-        string assemblyDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        var tt = System.AppDomain.CurrentDomain.BaseDirectory;
-        var rootDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
-        return Path.Combine(assemblyDirectory, relativeFilePath);
+
+        return Path.Combine(projectRootPath, relativeFilePath);
     }
 
     static void EnsureDirectoryExists(string filePath)
