@@ -1,22 +1,33 @@
 ﻿using CustomModels;
-using CustomSerives;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using startup_checker;
 
 class Program
 {
-    static void Main()
+
+    public static void Main(string[] args)
     {
-        var builder = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false)
-        .AddUserSecrets<Program>();
+        IHost host = CreateHostBuilder(args).Build();
+        var worker = ActivatorUtilities.CreateInstance<Worker>(host.Services);
+        worker.Run();
+    }
+        
+    public static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        return Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.SetBasePath(Directory.GetCurrentDirectory());
+                config.AddJsonFile("appsettings.json", optional: true);
+                config.AddUserSecrets<Program>();
+            })
+            .ConfigureServices(services =>
+            {
+                Console.WriteLine("Here start the service");
+            });
 
-        IConfiguration config = builder.Build();
-
-        MailOptions mailOptions = new MailOptions();
-        config.GetSection("MailOptions").Bind(mailOptions);
-
-        //MailServices.SendEmail(mailOptions);
-        LidMonitor.MainCall(mailOptions);
     }
 }
+
