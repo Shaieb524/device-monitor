@@ -10,6 +10,7 @@ class Program
     public static void Main(string[] args)
     {
         IHost host = CreateHostBuilder(args).Build();
+        // create separate worker class with DI
         var worker = ActivatorUtilities.CreateInstance<Worker>(host.Services);
         worker.Run();
     }
@@ -20,12 +21,13 @@ class Program
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.SetBasePath(Directory.GetCurrentDirectory());
-                config.AddJsonFile("appsettings.json", optional: true);
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                 config.AddUserSecrets<Program>();
             })
             .ConfigureServices(services =>
             {
                 Console.WriteLine("Here start the service");
+                services.AddSingleton<MailOptions>();
             });
 
     }
