@@ -1,26 +1,33 @@
 using CustomModels;
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
 class LidMonitor
 {
     private static MailOptions _mailOptions;
     private const string LOG_FILE_PATH = "user_activity.txt";
+    private readonly ILogger _logger;
 
-    public static void MainCall(MailOptions mailOptions)
+    public LidMonitor(ILogger logger)
+    {
+        _logger = logger;
+    }
+
+    public void StartMonitoring(MailOptions mailOptions)
     {
         try
         {
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
-            Console.WriteLine("monitoring lock");
+            _logger.LogInformation("Monitoring lock.");
             Console.ReadLine();
         }
         catch (Exception ex)
         {
-            Console.WriteLine("An error occurred: " + ex.Message);
+            _logger.LogError("An error occurred: " + ex.Message);
         }
     }
 
-    static void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
+    void SystemEvents_SessionSwitch(object sender, Microsoft.Win32.SessionSwitchEventArgs e)
     {
         DateTime currentDateAndTime = DateTime.Now;
         string dateOnly = currentDateAndTime.ToString("MM/dd/yyyy");
@@ -28,19 +35,19 @@ class LidMonitor
 
         if (e.Reason == SessionSwitchReason.SessionLock)
         {
-            Console.WriteLine("I left my desk");
+            _logger.LogInformation("I left my desk.");
             EnsureDirectoryExists(GetFullFilePath(todayLogPath));
             AppendMessageToFile(GetFullFilePath(todayLogPath), "Desktop closed!");
         }
         else if (e.Reason == SessionSwitchReason.SessionUnlock)
         {
-            Console.WriteLine("I returned to my desk");
+            _logger.LogInformation("I returned to my desk.");
             EnsureDirectoryExists(GetFullFilePath(todayLogPath));
             AppendMessageToFile(GetFullFilePath(todayLogPath), "Desktop opened!");
         }
     }
 
-    static void AppendMessageToFile(string filePath, string message)
+    void AppendMessageToFile(string filePath, string message)
     {
         try
         {
@@ -51,7 +58,7 @@ class LidMonitor
         } 
         catch (Exception ex) 
         {
-            Console.WriteLine("An error occurred while writing to the file: " + ex.Message);
+            _logger.LogError("An error occurred while writing to the file: " + ex.Message);
         }
     }
 

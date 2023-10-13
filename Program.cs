@@ -26,7 +26,6 @@ class Program
             })
             .ConfigureServices(services =>
             {
-                Console.WriteLine("Here start the service");
                 services.AddSingleton<MailOptions>();
             });
 

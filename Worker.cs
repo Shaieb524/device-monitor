@@ -21,7 +21,8 @@ namespace startup_checker
         {
             _logger.LogInformation("Heyyyy");
             _configuration.GetSection("MailOptions").Bind(_mailOptions);
-            LidMonitor.MainCall(_mailOptions);
+            var monitor = new LidMonitor(_logger);
+            monitor.StartMonitoring(_mailOptions);
 
             Console.WriteLine("Worker is here");
         }

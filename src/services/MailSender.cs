@@ -3,10 +3,18 @@ namespace CustomSerives;
 using System.Net;
 using System.Net.Mail;
 using CustomModels;
+using Microsoft.Extensions.Logging;
 
 class MailServices
 {
-    public static void SendEmail(MailOptions mOptions)
+    private readonly ILogger _logger;
+
+    public MailServices(ILogger logger)
+    {
+        _logger = logger;
+    }
+
+    public void SendEmail(MailOptions mOptions)
     {
         MailMessage mail = new MailMessage(mOptions.FromEmail, mOptions.ToEmail)
         {
@@ -24,11 +32,11 @@ class MailServices
         try
         {
             smtpClient.Send(mail);
-            Console.WriteLine("Email sent successfully.");
+            _logger.LogInformation("Email sent successfully.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error sending email: {ex.Message}");
+            _logger.LogError($"Error sending email: {ex.Message}");
         }
     }
 }
