@@ -9,7 +9,7 @@ class MailServices
 {
     private readonly ILogger _logger;
 
-    public MailServices(ILogger logger)
+    public MailServices(ILogger<MailServices> logger)
     {
         _logger = logger;
     }

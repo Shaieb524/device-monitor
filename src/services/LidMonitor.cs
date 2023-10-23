@@ -1,6 +1,7 @@
 using CustomModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using startup_checker;
 
 class LidMonitor
 {
@@ -8,7 +9,7 @@ class LidMonitor
     private const string LOG_FILE_PATH = "user_activity.txt";
     private readonly ILogger _logger;
 
-    public LidMonitor(ILogger logger)
+    public LidMonitor(ILogger<LidMonitor> logger)
     {
         _logger = logger;
     }

@@ -6,7 +6,6 @@ using startup_checker;
 
 class Program
 {
-
     public static void Main(string[] args)
     {
         IHost host = CreateHostBuilder(args).Build();
@@ -27,6 +26,7 @@ class Program
             .ConfigureServices(services =>
             {
                 services.AddSingleton<MailOptions>();
+                services.AddSingleton<LidMonitor>();
             });
 
     }

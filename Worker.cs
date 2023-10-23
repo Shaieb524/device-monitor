@@ -9,22 +9,22 @@ namespace startup_checker
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private static MailOptions _mailOptions;
+        private static LidMonitor _lidMonitor;
 
-        public Worker(IConfiguration config, ILogger<Worker> logger, MailOptions mailOptions)
+        public Worker(IConfiguration config, ILogger<Worker> logger, MailOptions mailOptions, LidMonitor lidMonitor)
         {
             _configuration = config;
             _logger = logger;
             _mailOptions = mailOptions;
+            _lidMonitor = lidMonitor;
         }
 
         public void Run()
         {
-            _logger.LogInformation("Heyyyy");
+            _logger.LogInformation("Worker is here");
             _configuration.GetSection("MailOptions").Bind(_mailOptions);
-            var monitor = new LidMonitor(_logger);
-            monitor.StartMonitoring(_mailOptions);
+            _lidMonitor.StartMonitoring(_mailOptions);
 
-            Console.WriteLine("Worker is here");
         }
     }
 }
