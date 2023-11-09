@@ -1,0 +1,7 @@
+- .net core hosting and DI
+- convert to windows worked 
+	. hosting
+	. services
+	. publish profile
+	. create service
+	. talk about errors (1053)
